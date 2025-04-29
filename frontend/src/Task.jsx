@@ -17,7 +17,7 @@ const Task = () => {
     if (taskData._id) {
       axios
         .put(
-          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/update-task/${
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}api/v1/update-task/${
             taskData._id
           }`,
           taskData
@@ -35,7 +35,7 @@ const Task = () => {
     } else {
       axios
         .post(
-          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/insert-task`,
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}api/v1/insert-task`,
           taskData
         )
         .then((res) => {
@@ -52,7 +52,7 @@ const Task = () => {
 
   const getAllTasks = () => {
     axios
-      .get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/tasks`)
+      .get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}api/v1/tasks`)
       .then((res) => {
         setTaskList(res.data.tasks);
       });
@@ -112,7 +112,7 @@ const TaskList = ({ data, getAllTasks, setTaskData }) => {
       .get(
         `${
           import.meta.env.VITE_REACT_APP_BACKEND_URL
-        }/api/v1/get-specifictask/${id}`
+        }api/v1/get-specifictask/${id}`
       )
       .then((res) => {
         setTaskData(res.data.task);
@@ -133,7 +133,7 @@ const TaskList = ({ data, getAllTasks, setTaskData }) => {
           .delete(
             `${
               import.meta.env.VITE_REACT_APP_BACKEND_URL
-            }/api/v1/delete-task/${id}`
+            }api/v1/delete-task/${id}`
           )
           .then((res) => {
             toast.success("Task deleted successfully");

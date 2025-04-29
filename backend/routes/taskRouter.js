@@ -8,9 +8,9 @@ const {
 } = require("../controllers/taskController");
 const taskRouter = express.Router();
 
-taskRouter.post("/api/v1/insert-task", insertTask);
-taskRouter.get("/api/v1/tasks", getTasks);
-taskRouter.delete("/api/v1/delete-task/:id", deleteTask);
-taskRouter.put("/api/v1/update-task/:id", updateTask);
-taskRouter.get("/api/v1/get-specifictask/:id", getSpecificTask);
+taskRouter.post("/insert-task", insertTask);
+taskRouter.get("/tasks", getTasks);
+taskRouter.delete("/delete-task/:id", deleteTask);
+taskRouter.put("/update-task/:id", updateTask);
+taskRouter.get("/get-specifictask/:id", getSpecificTask);
 module.exports = { taskRouter };
