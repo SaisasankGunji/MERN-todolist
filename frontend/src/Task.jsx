@@ -17,7 +17,9 @@ const Task = () => {
     if (taskData._id) {
       axios
         .put(
-          `http://localhost:8000/api/v1/update-task/${taskData._id}`,
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/update-task/${
+            taskData._id
+          }`,
           taskData
         )
         .then((res) => {
@@ -32,7 +34,10 @@ const Task = () => {
         .catch((err) => console.log(err));
     } else {
       axios
-        .post("http://localhost:8000/api/v1/insert-task", taskData)
+        .post(
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/insert-task`,
+          taskData
+        )
         .then((res) => {
           toast.success("Task added successfully");
           setTaskData({ task: "", description: "" });
@@ -46,9 +51,11 @@ const Task = () => {
   };
 
   const getAllTasks = () => {
-    axios.get("http://localhost:8000/api/v1/tasks").then((res) => {
-      setTaskList(res.data.tasks);
-    });
+    axios
+      .get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/tasks`)
+      .then((res) => {
+        setTaskList(res.data.tasks);
+      });
   };
   useEffect(() => {
     getAllTasks();
@@ -102,7 +109,11 @@ const Task = () => {
 const TaskList = ({ data, getAllTasks, setTaskData }) => {
   function handleUpdate(id) {
     axios
-      .get(`http://localhost:8000/api/v1/get-specifictask/${id}`)
+      .get(
+        `${
+          import.meta.env.VITE_REACT_APP_BACKEND_URL
+        }/api/v1/get-specifictask/${id}`
+      )
       .then((res) => {
         setTaskData(res.data.task);
       });
@@ -119,7 +130,11 @@ const TaskList = ({ data, getAllTasks, setTaskData }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:8000/api/v1/delete-task/${id}`)
+          .delete(
+            `${
+              import.meta.env.VITE_REACT_APP_BACKEND_URL
+            }/api/v1/delete-task/${id}`
+          )
           .then((res) => {
             toast.success("Task deleted successfully");
             getAllTasks();
