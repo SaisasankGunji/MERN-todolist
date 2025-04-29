@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 app.use("/", taskRouter);
 
 mongoose
-  .connect(process.env.MONGODB_URL)
+  .connect("mongodb+srv://Saisasank:Saisasank%40123@cluster0.y5nye.mongodb.net/Tasks")
   .then(() => {
     console.log("DB connected");
     app.listen(8000, () => console.log("Server is running at PORT 8000"));
