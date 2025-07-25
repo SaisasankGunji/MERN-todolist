@@ -1,17 +1,19 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const { taskRouter } = require("./routes/taskRouter");
+const authRouter = require("./routes/authRouter");
+const isAuth = require("./middleware/isAuth");
 
 const app = express();
 
-// List of allowed frontend origins
 const allowedOrigins = [
-  "https://mern-todolist-lovat.vercel.app", // Deployed frontend
-  "http://localhost:5173", // Vite local dev
+  "https://mern-todolist-lovat.vercel.app",
+  "http://localhost:5173",
 ];
 
-// CORS middleware
+app.use(cookieParser());
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -25,22 +27,15 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-
-// JSON body parser middleware
 app.use(express.json());
 
-// Test home route
 app.get("/", (req, res) => {
-  res.send({
-    status: 200,
-    msg: "Welcome to Home",
-  });
+  res.send({ status: 200, msg: "Welcome to Home" });
 });
 
-// Route for tasks
-app.use("/api/v1", taskRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1", isAuth, taskRouter);
 
-// MongoDB connection (hardcoded URI)
 const MONGO_URI =
   "mongodb+srv://Saisasank:Saisasank%40123@cluster0.y5nye.mongodb.net/Tasks";
 
@@ -51,10 +46,7 @@ mongoose
   })
   .then(() => {
     console.log("DB connected");
-
     const PORT = process.env.PORT || 8000;
     app.listen(PORT, () => console.log(`Server is running at PORT ${PORT}`));
   })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+  .catch((err) => console.error("MongoDB connection error:", err));

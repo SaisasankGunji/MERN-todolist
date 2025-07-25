@@ -1,101 +1,185 @@
 const taskModel = require("../models/taskModel");
 
-const insertTask = (req, res) => {
-  const { task, description, createdAt } = req.body;
-  const newTask = new taskModel({
-    task,
-    description,
-    createdAt,
-  });
-  newTask
-    .save()
-    .then(() =>
-      res.status(201).json({
-        status: 201,
-        message: "Task inserted",
-        newTask,
-      })
-    )
-    .catch((err) =>
-      res.status(401).json({
-        status: 401,
-        message: "Error while inserting task",
-        errResponse: err,
-      })
-    );
+const insertTask = async (req, res) => {
+  try {
+    const { task, description } = req.body;
+
+    // Validate required fields
+    if (!task || task.trim() === "") {
+      return res.status(400).json({
+        status: 400,
+        message: "Task name is required",
+      });
+    }
+
+    const newTask = new taskModel({
+      task: task.trim(),
+      description: description ? description.trim() : "",
+      createdAt: new Date().toLocaleString(),
+      userId: req.user._id, // Associate task with authenticated user
+    });
+
+    const savedTask = await newTask.save();
+
+    res.status(201).json({
+      status: 201,
+      message: "Task inserted successfully",
+      task: savedTask,
+    });
+  } catch (err) {
+    console.error("Insert task error:", err);
+    res.status(500).json({
+      status: 500,
+      message: "Error while inserting task",
+      error: err.message,
+    });
+  }
 };
 
 const getTasks = async (req, res) => {
   try {
-    const tasks = await taskModel.find();
+    // Only get tasks for the authenticated user
+    const tasks = await taskModel
+      .find({ userId: req.user._id })
+      .sort({ createdAt: -1 });
+
     res.status(200).json({
       status: 200,
-      message: "Retrieved Tasks are: ",
+      message: "Tasks retrieved successfully",
       tasks,
     });
   } catch (err) {
-    res.status(401).json({
-      status: 401,
+    console.error("Get tasks error:", err);
+    res.status(500).json({
+      status: 500,
       message: "Error while retrieving tasks",
-      err,
+      error: err.message,
     });
   }
 };
 
 const deleteTask = async (req, res) => {
-  const id = req.params.id;
   try {
-    const deleteResponse = await taskModel.deleteOne({ _id: id });
+    const id = req.params.id;
+
+    if (!id) {
+      return res.status(400).json({
+        status: 400,
+        message: "Task ID is required",
+      });
+    }
+
+    // Only delete task if it belongs to the authenticated user
+    const deleteResponse = await taskModel.deleteOne({
+      _id: id,
+      userId: req.user._id,
+    });
+
+    if (deleteResponse.deletedCount === 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "Task not found or unauthorized",
+      });
+    }
+
     res.status(200).json({
       status: 200,
-      message: "Task successfully Deleted",
+      message: "Task deleted successfully",
       deleteResponse,
     });
   } catch (err) {
-    res.status(401).json({
-      status: 401,
+    console.error("Delete task error:", err);
+    res.status(500).json({
+      status: 500,
       message: "Error while deleting task",
-      err,
+      error: err.message,
     });
   }
 };
 
 const updateTask = async (req, res) => {
-  const id = req.params.id;
   try {
-    const { task, description, createdAt } = req.body;
+    const id = req.params.id;
+    const { task, description } = req.body;
+
+    if (!id) {
+      return res.status(400).json({
+        status: 400,
+        message: "Task ID is required",
+      });
+    }
+
+    if (!task || task.trim() === "") {
+      return res.status(400).json({
+        status: 400,
+        message: "Task name is required",
+      });
+    }
+
+    // Only update task if it belongs to the authenticated user
     const updateResponse = await taskModel.updateOne(
-      { _id: id },
-      { task, description, createdAt }
+      { _id: id, userId: req.user._id },
+      {
+        task: task.trim(),
+        description: description ? description.trim() : "",
+        updatedAt: new Date().toLocaleString(),
+      }
     );
+
+    if (updateResponse.matchedCount === 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "Task not found or unauthorized",
+      });
+    }
+
     res.status(200).json({
       status: 200,
-      message: "Task successfully Updated",
+      message: "Task updated successfully",
       updateResponse,
     });
   } catch (err) {
-    res.status(401).json({
-      status: 401,
-      message: "Error while deleting task",
-      err,
+    console.error("Update task error:", err);
+    res.status(500).json({
+      status: 500,
+      message: "Error while updating task",
+      error: err.message,
     });
   }
 };
 
 const getSpecificTask = async (req, res) => {
-  const id = req.params.id;
   try {
-    const task = await taskModel.findOne({ _id: id });
+    const id = req.params.id;
+
+    if (!id) {
+      return res.status(400).json({
+        status: 400,
+        message: "Task ID is required",
+      });
+    }
+
+    // Only get task if it belongs to the authenticated user
+    const task = await taskModel.findOne({ _id: id, userId: req.user._id });
+
+    if (!task) {
+      return res.status(404).json({
+        status: 404,
+        message: "Task not found or unauthorized",
+      });
+    }
+
     res.status(200).json({
       status: 200,
-      message: "Task retrieved successfully.",
+      message: "Task retrieved successfully",
       task,
     });
   } catch (err) {
-    res.status(401).json({
-      status: 401,
-      message: "Error while retrieving task.",
-      err,
+    console.error("Get specific task error:", err);
+    res.status(500).json({
+      status: 500,
+      message: "Error while retrieving task",
+      error: err.message,
     });
   }
 };
