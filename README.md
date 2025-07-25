@@ -5,7 +5,7 @@ A full-stack **To-Do List Web App** built using **Express (Backend)** and **Vite
 ---
 
 ## 🚀 Features
-
+- MERN authentication & authorization
 - Add, edit, delete tasks
 - Mark tasks as complete
 - Real-time feedback using toast and alerts
