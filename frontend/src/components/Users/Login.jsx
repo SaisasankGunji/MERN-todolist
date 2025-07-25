@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from "../AlertMessage";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
   const navigate = useNavigate();
   const { showAlert, AlertContainer } = useAlert();
 
@@ -29,6 +32,16 @@ const Login = () => {
       showAlert(err.response?.data?.error || "Login failed", "error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleClick = () => {
+    if (!showPassword) {
+      setPasswordType("text");
+      setShowPassword(true);
+    } else {
+      setPasswordType("password");
+      setShowPassword(false);
     }
   };
 
@@ -64,7 +77,7 @@ const Login = () => {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-1"
@@ -73,12 +86,23 @@ const Login = () => {
               </label>
               <input
                 name="password"
-                type="password"
+                type={passwordType}
                 value={form.password}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
+              {showPassword ? (
+                <FaEye
+                  className="absolute top-[40px] right-[10px]"
+                  onClick={handleClick}
+                />
+              ) : (
+                <FaEyeSlash
+                  className="absolute top-[40px] right-[10px]"
+                  onClick={handleClick}
+                />
+              )}
             </div>
 
             <button

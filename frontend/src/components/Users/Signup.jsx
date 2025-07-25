@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from "../AlertMessage";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -13,6 +14,10 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { showAlert, AlertContainer } = useAlert();
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
+  const [showCnfPassword, setShowCnfPassword] = useState(false);
+  const [cnfPasswordType, setCnfPasswordType] = useState("password");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -52,6 +57,25 @@ const Signup = () => {
       showAlert(errorMessage, "error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleClick = () => {
+    if (!showPassword) {
+      setPasswordType("text");
+      setShowPassword(true);
+    } else {
+      setPasswordType("password");
+      setShowPassword(false);
+    }
+  };
+  const handleClick2 = () => {
+    if (!showCnfPassword) {
+      setCnfPasswordType("text");
+      setShowCnfPassword(true);
+    } else {
+      setCnfPasswordType("password");
+      setShowCnfPassword(false);
     }
   };
 
@@ -102,7 +126,7 @@ const Signup = () => {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-1"
@@ -111,15 +135,26 @@ const Signup = () => {
               </label>
               <input
                 name="password"
-                type="password"
+                type={passwordType}
                 value={form.password}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
+              {showPassword ? (
+                <FaEye
+                  className="absolute top-[40px] right-[10px]"
+                  onClick={handleClick}
+                />
+              ) : (
+                <FaEyeSlash
+                  className="absolute top-[40px] right-[10px]"
+                  onClick={handleClick}
+                />
+              )}
             </div>
 
-            <div>
+            <div className="relative">
               <label
                 htmlFor="cnfPassword"
                 className="block text-sm font-medium text-gray-700 mb-1"
@@ -128,12 +163,23 @@ const Signup = () => {
               </label>
               <input
                 name="cnfPassword"
-                type="password"
+                type={cnfPasswordType}
                 value={form.cnfPassword}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
+              {showCnfPassword ? (
+                <FaEye
+                  className="absolute top-[40px] right-[10px]"
+                  onClick={handleClick2}
+                />
+              ) : (
+                <FaEyeSlash
+                  className="absolute top-[40px] right-[10px]"
+                  onClick={handleClick2}
+                />
+              )}
             </div>
 
             <button

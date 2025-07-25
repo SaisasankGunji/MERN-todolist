@@ -91,22 +91,6 @@ const Home = () => {
             </Link>
           </div>
         </div>
-
-        {/* Stats Section */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div>
-            <div className="text-4xl font-bold text-blue-600 mb-2">10K+</div>
-            <div className="text-gray-600">Active Users</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-green-600 mb-2">100K+</div>
-            <div className="text-gray-600">Tasks Completed</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-purple-600 mb-2">99.9%</div>
-            <div className="text-gray-600">Uptime</div>
-          </div>
-        </div>
       </div>
     </div>
   );
